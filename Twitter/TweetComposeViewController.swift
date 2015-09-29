@@ -33,10 +33,13 @@ class TweetComposeViewController: UIViewController, UITextViewDelegate {
         if tweet == nil {
             originalText = "enter your tweet here"
             tweetButton.setTitle("Tweet", forState: UIControlState.Normal)
+            self.title = "Compose Tweet"
         }
         else {
             originalText = "enter your reply here"
             tweetButton.setTitle("Reply", forState: UIControlState.Normal)
+            self.title = "Compose Reply"
+
         }
         tweetView.text = originalText
     }
@@ -80,7 +83,7 @@ class TweetComposeViewController: UIViewController, UITextViewDelegate {
             }
         }
         else {
-            TwitterClient.sharedInstance.reply(self.tweetView.text, tweet) { (tweet, error) -> () in
+            TwitterClient.sharedInstance.reply(self.tweetView.text, tweet: tweet) { (tweet, error) -> () in
                 if tweet == nil {
                     self.showErrorLabel()
                 }
