@@ -29,17 +29,16 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let dummyTableVC = UITableViewController()
         dummyTableVC.tableView = tableView
         dummyTableVC.refreshControl = refreshControl
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
         if User.currentUser != nil {
             fetchTweets()
         }
     }
     
-    func addTweet(notification: NSNotification) {
-        self.tweets?.insert((notification.object as? Tweet)!, atIndex: 0)
+    override func viewWillAppear(animated: Bool) {
+        if (TwitterClient.sharedInstance.newTweet != nil) {
+            self.tweets?.insert(TwitterClient.sharedInstance.newTweet, atIndex: 0)
+            self.tableView.reloadData()
+        }
     }
     
     func fetchTweets() {

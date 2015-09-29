@@ -16,6 +16,7 @@ let twitterURL = NSURL(string: "https://api.twitter.com")
 class TwitterClient: BDBOAuth1RequestOperationManager {
     
     var loginCompletion: ((user: User?, error: NSError?) -> ())?
+    var newTweet: Tweet!
     
     class var sharedInstance: TwitterClient {
         struct Static {
@@ -45,9 +46,11 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
         POST("1.1/statuses/update.json", parameters: params, success: { (operation, response) -> Void in
             print("Tweet Posted")
             let tweet = Tweet(dictionary: response as! NSDictionary)
+            self.newTweet = tweet
             completion(tweet: tweet, error: nil)
         }) { (operation, error) -> Void in
             print("Tweet Post Error")
+            self.newTweet = nil
             completion(tweet: nil, error: error)
         }
     }
@@ -55,10 +58,12 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
     func homeTimelineWithParams(params: NSDictionary?, completion: (tweets: [Tweet]?, error: NSError?) -> ()) {
         GET("1.1/statuses/home_timeline.json", parameters: params, success: { (operation, response) -> Void in
             print("Fetched homeline")
+            self.newTweet = nil
             let tweets = Tweet.tweetsWithArray(response as! [NSDictionary])
             completion(tweets: tweets, error: nil)
         }, failure: { (operation, error) -> Void in
             print("Failed to get tweets \(error)")
+            self.newTweet = nil
             completion(tweets: nil, error: error)
         })
     }
