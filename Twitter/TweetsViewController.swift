@@ -29,8 +29,13 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let dummyTableVC = UITableViewController()
         dummyTableVC.tableView = tableView
         dummyTableVC.refreshControl = refreshControl
-
-        fetchTweets()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        if User.currentUser != nil {
+            fetchTweets()
+        }
     }
     
     func addTweet(notification: NSNotification) {

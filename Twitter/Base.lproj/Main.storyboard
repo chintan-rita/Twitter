@@ -23,7 +23,6 @@
                                 <state key="normal" title="Login with Twitter"/>
                                 <connections>
                                     <action selector="onLogin:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3tw-ll-1kB"/>
-                                    <segue destination="i4N-zR-Bsz" kind="modal" identifier="loginSegue" id="ac1-H0-Ceo"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -33,6 +32,9 @@
                             <constraint firstItem="n79-CA-P2Q" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="rn9-dL-Z4c"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <segue destination="i4N-zR-Bsz" kind="modal" identifier="loginSegue" id="c2z-Ey-TJ4"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
@@ -456,6 +458,7 @@
             <objects>
                 <navigationController storyboardIdentifier="TweetsNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="i4N-zR-Bsz" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="LEf-c8-t2z"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="W8p-Jz-yZc">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -467,7 +470,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="adr-jr-EsT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1102" y="342"/>
+            <point key="canvasLocation" x="597" y="358"/>
         </scene>
     </scenes>
 </document>
