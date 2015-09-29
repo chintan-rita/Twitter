@@ -28,5 +28,5 @@ Time spent: `8 hours`
 
 ### Walkthrough
 
-![Video Walkthrough](...)
+![Video Walkthrough](twitter.gif)
 
