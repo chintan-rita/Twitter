@@ -8,9 +8,12 @@
 
 import UIKit
 
-class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+protocol TweetCellDelegator {
+    func callSegueFromCell(tweet dataobject: Tweet)
+}
 
-    @IBOutlet weak var OnReply: UIButton!
+class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, TweetCellDelegator {
+
     var tweets: [Tweet]?
     var refreshControl: UIRefreshControl!
     
@@ -20,6 +23,11 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         User.currentUser?.logout()
     }
     
+    func callSegueFromCell(tweet dataobject: Tweet) {
+        //try not to send self, just to avoid retain cycles(depends on how you handle the code on the next controller)
+        self.performSegueWithIdentifier("replySegue", sender:dataobject )
+        
+    }
     
     override func viewDidLoad() {
         self.tableView.rowHeight = UITableViewAutomaticDimension
@@ -64,8 +72,13 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell{
         let cell = tableView.dequeueReusableCellWithIdentifier("TweetCell", forIndexPath: indexPath) as! TweetViewCell
+        cell.delegate = self
         cell.tweet = self.tweets![indexPath.row]
         return cell
+    }
+    
+    func onReply(sender: AnyObject?) {
+        self.performSegueWithIdentifier("replySegue", sender: self)
     }
     
     
@@ -83,9 +96,13 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         if  segue.identifier == "detailViewSegue" {
-            let vc = segue.destinationViewController as! TweetDetailViewController
             let indexPath = tableView.indexPathForCell(sender as! UITableViewCell)
+            let vc = segue.destinationViewController as! TweetDetailViewController
             vc.tweet = self.tweets![indexPath!.item]
+        }
+        else if segue.identifier  == "replySegue" {
+            let composeVC = segue.destinationViewController as! TweetComposeViewController
+            composeVC.tweet = sender as! Tweet
         }
     }
     

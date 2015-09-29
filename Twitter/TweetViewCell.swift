@@ -10,7 +10,6 @@ import UIKit
 
 class TweetViewCell: UITableViewCell {
     @IBOutlet weak var tweetLabel: UILabel!
-
     @IBOutlet weak var replyButton: UIButton!
     @IBOutlet weak var favoriteButton: UIButton!
     @IBOutlet weak var reTweetButton: UIButton!
@@ -19,6 +18,8 @@ class TweetViewCell: UITableViewCell {
     @IBOutlet weak var tweetTimestampLabel: UILabel!
     @IBOutlet weak var tweetUserNameLabel: UILabel!
     @IBOutlet weak var tweetAuthorImageView: UIImageView!
+    
+    var delegate:TweetCellDelegator!
     
     var tweet: Tweet! {
         didSet{
@@ -54,11 +55,6 @@ class TweetViewCell: UITableViewCell {
         }
     }
     
-    
-    @IBAction func onReply(sender: AnyObject) {
-        
-    }
-    
     @IBAction func onFavorite(sender: AnyObject) {
         TwitterClient.sharedInstance.favorite(tweet){ (tweet, error) -> () in
             if tweet != nil {
@@ -77,7 +73,12 @@ class TweetViewCell: UITableViewCell {
                 
             }
         }
-
+    }
+    
+    @IBAction func onReply(sender: AnyObject) {
+        if(self.delegate != nil){ //Just to be safe.
+            self.delegate.callSegueFromCell(tweet: tweet)
+        }
     }
     
     override func awakeFromNib() {

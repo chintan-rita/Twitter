@@ -9,6 +9,7 @@
 import UIKit
 
 class TweetComposeViewController: UIViewController, UITextViewDelegate {
+    @IBOutlet weak var tweetButton: UIButton!
     
     @IBOutlet weak var tweetView: UITextView!
         
@@ -17,6 +18,8 @@ class TweetComposeViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var userScreenNameLabel: UILabel!
     @IBOutlet weak var userNameLabel: UILabel!
     var originalColor = UIColor.blackColor()
+    var tweet: Tweet!
+    var originalText: String!
     
     @IBOutlet weak var remainingCharsLabel: UILabel!
     override func viewDidLoad() {
@@ -27,6 +30,15 @@ class TweetComposeViewController: UIViewController, UITextViewDelegate {
         userProfileImageView.setImageWithURL(NSURL(string: User.currentUser!.profileImageUrl!))
         originalColor = UIColor.grayColor()
         tweetView.textColor = originalColor
+        if tweet == nil {
+            originalText = "enter your tweet here"
+            tweetButton.setTitle("Tweet", forState: UIControlState.Normal)
+        }
+        else {
+            originalText = "enter your reply here"
+            tweetButton.setTitle("Reply", forState: UIControlState.Normal)
+        }
+        tweetView.text = originalText
     }
 
     override func didReceiveMemoryWarning() {
@@ -35,7 +47,7 @@ class TweetComposeViewController: UIViewController, UITextViewDelegate {
     }
     
     func textViewShouldBeginEditing(textView: UITextView) -> Bool {
-        if textView.text == "enter your tweet here" {
+        if textView.text ==  originalText {
             textView.textColor = UIColor.blackColor()
             textView.text = ""
         }
@@ -44,7 +56,7 @@ class TweetComposeViewController: UIViewController, UITextViewDelegate {
     
     func textViewDidChange(textView: UITextView) {
         var remainingLength = 140
-        if textView.text == "enter your tweet here" {
+        if textView.text == originalText {
             remainingLength = 140
         }
         else {
@@ -55,14 +67,26 @@ class TweetComposeViewController: UIViewController, UITextViewDelegate {
     }
 
     @IBAction func onTweet(sender: AnyObject) {
-        var submitDictionary = [String: String]()
-        submitDictionary["status"] = self.tweetView.text
-        TwitterClient.sharedInstance.tweet(submitDictionary) { (tweet, error) -> () in
-            if tweet == nil {
-                self.showErrorLabel()
+        if tweet == nil {
+            var submitDictionary = [String: String]()
+            submitDictionary["status"] = self.tweetView.text
+            TwitterClient.sharedInstance.tweet(submitDictionary) { (tweet, error) -> () in
+                if tweet == nil {
+                    self.showErrorLabel()
+                }
+                else {
+                    self.navigationController?.popToRootViewControllerAnimated(true)
+                }
             }
-            else {
-                self.navigationController?.popToRootViewControllerAnimated(true)
+        }
+        else {
+            TwitterClient.sharedInstance.reply(self.tweetView.text, tweet) { (tweet, error) -> () in
+                if tweet == nil {
+                    self.showErrorLabel()
+                }
+                else {
+                    self.navigationController?.popToRootViewControllerAnimated(true)
+                }
             }
         }
     }
@@ -79,7 +103,7 @@ class TweetComposeViewController: UIViewController, UITextViewDelegate {
     func textViewShouldEndEditing(textView: UITextView) -> Bool {
         if textView.text == "" {
             textView.textColor = originalColor
-            textView.text = "please enter your tweet here"
+            textView.text = originalText
         }
         return true;
     }
