@@ -30,6 +30,10 @@ class TweetComposeViewController: UIViewController, UITextViewDelegate {
         userProfileImageView.setImageWithURL(NSURL(string: User.currentUser!.profileImageUrl!))
         originalColor = UIColor.grayColor()
         tweetView.textColor = originalColor
+        tweetView.layer.borderColor = UIColor.lightGrayColor().CGColor
+        tweetView.layer.cornerRadius = 5
+        tweetView.layer.borderWidth = 1
+        
         if tweet == nil {
             originalText = "enter your tweet here"
             tweetButton.setTitle("Tweet", forState: UIControlState.Normal)
